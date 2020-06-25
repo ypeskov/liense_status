@@ -1,0 +1,29 @@
+.desc-container {
+    padding: 1em;
+}
+
+.description-label {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: blue;
+}
+
+.description-title {
+    font-size: 1.5em;
+}
+
+.description-section {
+    margin: 1em 0;
+}
+
+.desc-val {
+    font-weight: bold;
+    color: #000;
+}
+
+.footnote {
+    margin-top: 2em;
+    font-style: italic;
+    font-size: 1.1em;
+    color: gray;
+}

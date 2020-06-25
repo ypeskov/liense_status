@@ -1,0 +1,28 @@
+.box {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.phase-container {
+    width: 100%;
+    padding: 0.5em;
+}
+
+.stage-name, .stage-length {
+    font-size: 2em;
+    color: rgb(3, 58, 15);
+    text-align: center;
+}
+
+.phase1 {
+    background-color: #2499BD;
+}
+
+.phase2 {
+    background-color: #E8FA69;
+}
+
+.phase3 {
+    background-color: #C7FABB;
+}
