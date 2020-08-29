@@ -1,9 +1,14 @@
 <template>
-    <div class="phase-box">
+    <div class={phaseDetails.classes}>
         <div class="phase-title">{phaseDetails.title}</div>
         <template if:true={phaseDetails.isActive}>
             <div class="stage-title"><b>Stage:&nbsp;</b>{projectDetails.Project_Stage__c}</div>
             <div class="tasks-title"><b>Task:&nbsp;</b>{projectDetails.Project_Tasks__c}</div>
         </template>
+
+        <div class="dates-section">
+            <div class="start-date"><b>Start Date:&nbsp;</b>{phaseDetails.startDate}</div>
+            <div class="end-date"><b>End Date:&nbsp;</b>{phaseDetails.endDate}</div>
+        </div>
     </div>
 </template>

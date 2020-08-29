@@ -1,6 +1,10 @@
 .phase-blocks-container {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: stretch;
     margin-bottom: 2em;
+}
+
+.stage-action-container, .stage-note-container {
+    font-size: 1.5em;
 }
