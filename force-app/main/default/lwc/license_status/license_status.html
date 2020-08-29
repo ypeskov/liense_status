@@ -1,7 +1,25 @@
 <template>
     <div class="phase-blocks-container">
-        <c-license_phase_block phase-details={phases.phase1}></c-license_phase_block>
-        <c-license_phase_block phase-details={phases.phase2}></c-license_phase_block>
-        <c-license_phase_block phase-details={phases.phase3}></c-license_phase_block>
+        <c-license_phase_block 
+            style="width: 30%;"
+            phase-details={phases.phase1} 
+            project-details={projectDetails}>
+        </c-license_phase_block>
+        
+        <c-license_phase_block 
+            style="width: 30%;"
+            phase-details={phases.phase2} 
+            project-details={projectDetails}>
+        </c-license_phase_block>
+        
+        <c-license_phase_block 
+            style="width: 30%;"
+            phase-details={phases.phase3} 
+            project-details={projectDetails}>
+        </c-license_phase_block>
     </div>
+
+    <div class="stage-action-container"><b>Current Stage Action:</b>&nbsp;{projectDetails.Stage_Action__c}</div>
+
+    <div class="stage-note-container"><b>Status Note:&nbsp;</b>{projectDetails.Status_Note__c}</div>
 </template>

@@ -1,8 +1,9 @@
 <template>
     <div class="phase-box">
-        <div class="phase-title">Title</div>
-        <div class="stage-title"></div>
-        <div class="task-title"></div>
-        Activity: {phaseDetails.isActive}
+        <div class="phase-title">{phaseDetails.title}</div>
+        <template if:true={phaseDetails.isActive}>
+            <div class="stage-title"><b>Stage:&nbsp;</b>{projectDetails.Project_Stage__c}</div>
+            <div class="tasks-title"><b>Task:&nbsp;</b>{projectDetails.Project_Tasks__c}</div>
+        </template>
     </div>
 </template>
