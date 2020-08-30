@@ -58,12 +58,14 @@ export default class License_status extends LightningElement {
         'Articles_of_Assoc_Projected_Completion__c': 'MISA_License_Actual_Completion__c',
         'Company_reg_Projected_Completion__c': 'Articles_of_Assoc_Actual_Completion__c',
         'Chamber_of_Commerce_Projected_Completion__c': 'Company_Reg_Actual_Completion__c',
-        'Ministry_of_Labor_Projected_Completion__c': '',
-        'Zakat_Projected_Completion__c': '',
-        'Company_Stamp_Forecasted_Completion__c': '',
-        'GM_Visa_Forecasted_Completion__c': '',
-        'Residency_Forecasted_Completion__c': '',
-        'Handover_Projected_Completion__c': '',
+        //phase 2
+        'Ministry_of_Labor_Projected_Completion__c': 'Chamber_of_Commerce_Actual_Completion__c',
+        'Zakat_Projected_Completion__c': 'Ministry_of_Labour_Actual_Completion__c',
+        'Company_Stamp_Forecasted_Completion__c': 'Zakat_Actual_Completion__c',
+        'GM_Visa_Forecasted_Completion__c': 'Company_Stamp_Actual_Completion__c',
+        //phase 3
+        'Residency_Forecasted_Completion__c': 'GM_VIsa_Actual_Completion__c',
+        'Handover_Projected_Completion__c': 'Residency_Actual_Completion__c',
     };
 
     connectedCallback() {
@@ -102,21 +104,26 @@ export default class License_status extends LightningElement {
         this.phases[`phase${activePhaseNumber}`].endDate = this.projectDetails[currentStage[0]];
         
         if (activePhaseNumber === currentStage[1]) {
-            // console.log(currentStage)
             const prevFieldName = this.mapProjectedStartDate2ActualEndPrev[currentStage[0]];
-            // console.log(prevFieldName)
-
-            // console.log(`phase${activePhaseNumber}`)
-            // console.log(this.projectDetails[prevFieldName])
             this.phases[`phase${activePhaseNumber}`].startDate = this.projectDetails[prevFieldName];
         }
 
-        // try {
-        //     this.phases.phase1.startDate = this.projectDetails.Project_Start_Date__c;
-        //     this.phases.phase3.endDate = this.projectDetails.Handover_Projected_Completion__c;
-        // } catch(err) {
-        //     //do nothing. we don't care and will not display the date
-        // }
+        try {
+            this.phases.phase1.startDate = this.projectDetails.Project_Start_Date__c;
+            this.phases.phase3.endDate = this.projectDetails.Handover_Projected_Completion__c;
+        } catch(err) {
+            //do nothing. we don't care and will not display the date
+        }
+
+        if (activePhaseNumber === 2) {
+            this.phases.phase1.endDate = this.projectDetails.Chamber_of_Commerce_Actual_Completion__c;
+        }
+
+        if (activePhaseNumber === 2 || activePhaseNumber === 3) {
+            this.phases.phase1.endDate = this.projectDetails.Chamber_of_Commerce_Actual_Completion__c;
+            this.phases.phase2.endDate = this.projectDetails.Company_Stamp_Actual_Completion__c;
+            this.phases.phase2.startDate = this.projectDetails.Company_Reg_Actual_Completion__c;
+        }
 
         for(let phase in this.phases) {
             let tmpPhase = this.phases[phase];

@@ -23,6 +23,12 @@ public with sharing class ProjectPlan {
             'MISA_License_Actual_Completion__c, ' +
             'Articles_of_Assoc_Actual_Completion__c, ' +
             'Company_Reg_Actual_Completion__c, ' +
+            'Chamber_of_Commerce_Actual_Completion__c, ' +
+            'Ministry_of_Labour_Actual_Completion__c, ' +
+            'Zakat_Actual_Completion__c, ' +
+            'Company_Stamp_Actual_Completion__c, ' +
+            'GM_VIsa_Actual_Completion__c, ' +
+            'Residency_Actual_Completion__c, ' +
             'Status_Note__c ' +
             'FROM Project_Plan__c WHERE Account__c = \'' + String.escapeSingleQuotes(accountId) + '\'';
         Project_Plan__c projectPlan = Database.query(query);
