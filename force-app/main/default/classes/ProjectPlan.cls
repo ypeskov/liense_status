@@ -19,6 +19,10 @@ public with sharing class ProjectPlan {
             'GM_Visa_Forecasted_Completion__c, ' +
             'Residency_Forecasted_Completion__c, ' +
             'Handover_Projected_Completion__c, ' +
+            //actual completions
+            'MISA_License_Actual_Completion__c, ' +
+            'Articles_of_Assoc_Actual_Completion__c, ' +
+            'Company_Reg_Actual_Completion__c, ' +
             'Status_Note__c ' +
             'FROM Project_Plan__c WHERE Account__c = \'' + String.escapeSingleQuotes(accountId) + '\'';
         Project_Plan__c projectPlan = Database.query(query);

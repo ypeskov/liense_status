@@ -53,6 +53,19 @@ export default class License_status extends LightningElement {
         'Handover / Closure': ['Handover_Projected_Completion__c', 3]
     };
 
+    mapProjectedStartDate2ActualEndPrev = {
+        'MISA_License_Projected_Completion__c': 'Project_Start_Date__c',
+        'Articles_of_Assoc_Projected_Completion__c': 'MISA_License_Actual_Completion__c',
+        'Company_reg_Projected_Completion__c': 'Articles_of_Assoc_Actual_Completion__c',
+        'Chamber_of_Commerce_Projected_Completion__c': 'Company_Reg_Actual_Completion__c',
+        'Ministry_of_Labor_Projected_Completion__c': '',
+        'Zakat_Projected_Completion__c': '',
+        'Company_Stamp_Forecasted_Completion__c': '',
+        'GM_Visa_Forecasted_Completion__c': '',
+        'Residency_Forecasted_Completion__c': '',
+        'Handover_Projected_Completion__c': '',
+    };
+
     connectedCallback() {
         //hardcoded acccountId for dev
         getProjectPlanByUserId({accountId: '0013M0000057CHTQA2'})
@@ -88,12 +101,22 @@ export default class License_status extends LightningElement {
         const currentStage = this.stages[this.projectDetails.Project_Stage__c];
         this.phases[`phase${activePhaseNumber}`].endDate = this.projectDetails[currentStage[0]];
         
-        try {
-            this.phases.phase1.startDate = this.projectDetails.Project_Start_Date__c;
-            this.phases.phase3.endDate = this.projectDetails.Handover_Projected_Completion__c;
-        } catch(err) {
-            //do nothing. we don't care and will not display the date
+        if (activePhaseNumber === currentStage[1]) {
+            // console.log(currentStage)
+            const prevFieldName = this.mapProjectedStartDate2ActualEndPrev[currentStage[0]];
+            // console.log(prevFieldName)
+
+            // console.log(`phase${activePhaseNumber}`)
+            // console.log(this.projectDetails[prevFieldName])
+            this.phases[`phase${activePhaseNumber}`].startDate = this.projectDetails[prevFieldName];
         }
+
+        // try {
+        //     this.phases.phase1.startDate = this.projectDetails.Project_Start_Date__c;
+        //     this.phases.phase3.endDate = this.projectDetails.Handover_Projected_Completion__c;
+        // } catch(err) {
+        //     //do nothing. we don't care and will not display the date
+        // }
 
         for(let phase in this.phases) {
             let tmpPhase = this.phases[phase];
