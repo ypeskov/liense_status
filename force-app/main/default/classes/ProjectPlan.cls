@@ -1,6 +1,8 @@
 public with sharing class ProjectPlan {
     @AuraEnabled(cacheable=true)
-    public static Project_Plan__c getProjectPlanByUserId(String accountId) {
+    public static Project_Plan__c getProjectPlanByUserId(String accountId, String userId) {
+        System.debug(userId);
+
         String query = 'SELECT Id, ' +
             'Name, ' +
             'Account__c, ' +
@@ -30,8 +32,18 @@ public with sharing class ProjectPlan {
             'GM_VIsa_Actual_Completion__c, ' +
             'Residency_Actual_Completion__c, ' +
             'Status_Note__c ' +
-            'FROM Project_Plan__c WHERE Account__c = \'' + String.escapeSingleQuotes(accountId) + '\'';
-        Project_Plan__c projectPlan = Database.query(query);
+            'FROM Project_Plan__c ' +
+            'WHERE Client__c = \'' + String.escapeSingleQuotes(userId) + '\'' +
+            'LIMIT 1';
+
+        Project_Plan__c projectPlan;
+        try {
+            projectPlan = Database.query(query);
+        } catch(Exception e) {
+            projectPlan = new Project_Plan__c();
+            return projectPlan;
+        }
+        
 
         if (projectPlan.Project_Phase__c == NULL) {
             projectPlan.Project_Phase__c = '';

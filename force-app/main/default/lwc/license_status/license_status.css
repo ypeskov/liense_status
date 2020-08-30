@@ -8,3 +8,9 @@
 .stage-action-container, .stage-note-container {
     font-size: 1.5em;
 }
+
+.project-name {
+    text-align: center;
+    font-size: 3em;
+    margin-bottom: 1em;
+}

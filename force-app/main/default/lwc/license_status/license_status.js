@@ -70,13 +70,14 @@ export default class License_status extends LightningElement {
 
     connectedCallback() {
         //hardcoded acccountId for dev
-        getProjectPlanByUserId({accountId: '0013M0000057CHTQA2'})
+        getProjectPlanByUserId({accountId: '0013M0000057CHTQA2', userId})
         .then(result => {
             // console.log(result);
             this.projectDetails = result;
             this.processResponseData();
         })
         .catch(err => {
+            alert('you don\'t have any project');
             console.log('OOOOOOOOPS')
             console.log(err);
         });
