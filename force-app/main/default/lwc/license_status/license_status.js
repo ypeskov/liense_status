@@ -166,8 +166,9 @@ export default class License_status extends LightningElement {
 
             if (state.title === this.projectDetails.Project_Phase__c) {
                 activePhaseNumber = state.order;
-                this.phases[`phase${activePhaseNumber}`].tasks = this.getTasksForActiveStage(this.projectDetails.Project_Stage__c);
-                this.getMarkedTasks(this.projectDetails.Project_Stage__c, this.projectDetails.Project_tasks__c)
+                // this.phases[`phase${activePhaseNumber}`].tasks = this.getTasksForActiveStage(this.projectDetails.Project_Stage__c);
+                this.phases[`phase${activePhaseNumber}`].tasks 
+                    = this.getMarkedTasks(this.projectDetails.Project_Stage__c, this.projectDetails.Project_Tasks__c);
 
                 state.isActive = true;
                 state.classes = 'phase-box enabled';
@@ -192,8 +193,20 @@ export default class License_status extends LightningElement {
             //do nothing. we don't care and will not display the date
         }
 
+        if (activePhaseNumber === 1) {
+            this.phases['phase2'].tasks = this.getMarkedTasks('Ministry of Labor', '', true);
+            this.phases['phase3'].tasks = this.getMarkedTasks('Residency', '', true);
+        }
+
         if (activePhaseNumber === 2) {
             this.phases.phase1.endDate = this.projectDetails.Chamber_of_Commerce_Actual_Completion__c;
+            this.phases['phase1'].tasks = this.getMarkedTasks('Chamber of Commerce', '', false);
+            this.phases['phase3'].tasks = this.getMarkedTasks('Residency', '', true);
+        }
+
+        if (activePhaseNumber === 3) {
+            this.phases['phase1'].tasks = this.getMarkedTasks('Chamber of Commerce', '', false);
+            this.phases['phase2'].tasks = this.getMarkedTasks('Ministry of Labor', '', false);
         }
 
         if (activePhaseNumber === 2 || activePhaseNumber === 3) {
@@ -211,23 +224,38 @@ export default class License_status extends LightningElement {
         }
     }
 
-    getTasksForActiveStage(stageTitle) {
+    getMarkedTasks(stageTitle, currentTaskTitle, isFuture=false) {
         for(let phase in this.finalStructure) {
             for(let i=0; i < Object.keys(this.finalStructure[phase]).length ; i++) {
                 if (stageTitle === this.finalStructure[phase][i].stageTitle) {
-                    return this.finalStructure[phase][i].tasks;
-                }
-            }
-        }
-    }
-
-    getMarkedTasks(stageTitle, currentTaskTitle) {
-        for(let phase in this.finalStructure) {
-            for(let i=0; i < Object.keys(this.finalStructure[phase]).length ; i++) {
-                if (stageTitle === this.finalStructure[phase][i].stageTitle) {
+                    let border = -1;
+                    let taskClasses = '';
+                    let tasks = [];
                     this.finalStructure[phase][i].tasks.forEach((task, idx) => {
-                        console.log(task, idx);
-                    })
+                        if (task === currentTaskTitle) {
+                            border = idx;
+                        }
+
+                        if (!isFuture) {
+                            if (idx > border && border !== -1) {
+                                taskClasses = 'future';
+                            } else if (idx === border) {
+                                taskClasses = 'active';
+                            } else {
+                                taskClasses = 'striked';
+                            }
+                        } else {
+                            taskClasses = 'future';
+                        }
+                        
+
+                        tasks[idx] = {
+                            'title': task,
+                            'classes': taskClasses,
+                        };
+                    });
+
+                    return tasks;
                 }
             }
         }

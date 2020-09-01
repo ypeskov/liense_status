@@ -3,3 +3,12 @@
     /* background-color: rgb(97, 173, 62); */
     color: #000;
 }
+
+.future {
+    color: grey;
+}
+
+.active {
+    font-weight: bold;
+    color: green;
+}
