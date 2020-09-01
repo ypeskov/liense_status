@@ -5,7 +5,14 @@
             <div class="stage-title"><b>Stage:&nbsp;</b>{projectDetails.Project_Stage__c}</div>
             <div class="tasks-title">
                 <div><b>Tasks:&nbsp;</b></div>
-                
+                <ul>
+                    <template for:each={phaseDetails.tasks} for:item="task">
+                        <c-task_in_stage key={task} tasks={phaseDetails.tasks} 
+                            task-in-loop={task} 
+                            task-in-stage={projectDetails.Project_Tasks__c}>
+                        </c-task_in_stage>
+                    </template>
+                </ul>
             </div>
         </template>
 

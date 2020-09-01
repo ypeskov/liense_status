@@ -1,0 +1,5 @@
+.striked {
+    text-decoration: line-through;
+    /* background-color: rgb(97, 173, 62); */
+    color: #000;
+}

@@ -13,6 +13,7 @@ export default class License_status extends LightningElement {
             classes: 'phase-box',
             startDate: null,
             endDate: null,
+            tasks: [],
         },
         phase2: {
             order: 2,
@@ -21,6 +22,7 @@ export default class License_status extends LightningElement {
             classes: 'phase-box',
             startDate: null,
             endDate: null,
+            tasks: [],
         },
         phase3: {
             order: 3,
@@ -29,6 +31,7 @@ export default class License_status extends LightningElement {
             classes: 'phase-box',
             startDate: null,
             endDate: null,
+            tasks: [],
         }
     };
 
@@ -70,46 +73,48 @@ export default class License_status extends LightningElement {
         'Handover_Projected_Completion__c': 'Residency_Actual_Completion__c',
     };
 
-    tasksPerPhase = {
-        phase1: [
-            'Power of Attorney Drafting',
-            'Application Details Completion',
-            'Company Name Reservation',
-            'MISA License Application',
-            'MISA License Issuance',
-            'MISA Portal Access Details',
-            'Authorized Signatory Assigning',
-            'Article of Association Preparation',
-            'AoA Review & Approval by MoC',
-        ],
-        phase2: [
-            'Receiving the Physical Documents',
-            'PoA Local Attestation',
-            'AoA Signing & Publishing',
-            'Commercial Registration Issuance',
-            'Chamber of Commerce Registration',
-            'Chamber of Commerce Activation',
-            'Ministry of Labor Registration',
-            'GOSI Registration',
-            'General Authority of Zakat & Tax Reg',
-            'Company Stamp Issuance',
-            'GM Visa Application',
-            'GM Visa Office Selection',
-            'GM Visa Processing (by the Client)',
-        ],
-        phase3: [
-            'GM Trip\'s Details to KSA',
-            'Border Number Collection (After Landing)',
-            'KSA Medical Checkup',
-            'KSA Health Insurance',
-            'KSA Residency Card Issuance',
-            'Muqeem Portal Registration',
-            'Absher Portal Registration',
-            'Re-entry Visa Issuance',
-            'Bank Account Docs Preparation',
-            'Handover Details Shared',
-        ]
-    }
+    // tasksPerPhase = {
+    //     phase1: [
+    //         'Power of Attorney Drafting',
+    //         'Application Details Completion',
+    //         'Company Name Reservation',
+    //         'MISA License Application',
+    //         'MISA License Issuance',
+    //         'MISA Portal Access Details',
+    //         'Authorized Signatory Assigning',
+    //         'Article of Association Preparation',
+    //         'AoA Review & Approval by MoC',
+    //     ],
+    //     phase2: [
+    //         'Receiving the Physical Documents',
+    //         'PoA Local Attestation',
+    //         'AoA Signing & Publishing',
+    //         'Commercial Registration Issuance',
+    //         'Chamber of Commerce Registration',
+    //         'Chamber of Commerce Activation',
+    //         'Ministry of Labor Registration',
+    //         'GOSI Registration',
+    //         'General Authority of Zakat & Tax Reg',
+    //         'Company Stamp Issuance',
+    //         'GM Visa Application',
+    //         'GM Visa Office Selection',
+    //         'GM Visa Processing (by the Client)',
+    //     ],
+    //     phase3: [
+    //         'GM Trip\'s Details to KSA',
+    //         'Border Number Collection (After Landing)',
+    //         'KSA Medical Checkup',
+    //         'KSA Health Insurance',
+    //         'KSA Residency Card Issuance',
+    //         'Muqeem Portal Registration',
+    //         'Absher Portal Registration',
+    //         'Re-entry Visa Issuance',
+    //         'Bank Account Docs Preparation',
+    //         'Handover Details Shared',
+    //     ]
+    // }
+
+    finalStructure = {};
 
     async connectedCallback() {
         let phases, stages;
@@ -127,11 +132,10 @@ export default class License_status extends LightningElement {
             console.log(err);
         }
        
-        let finalStrusture ={};
         for(let phaseTitle in phases) {
-            finalStrusture[phaseTitle] = {};
+            this.finalStructure[phaseTitle] = {};
             for(let j=0; j < phases[phaseTitle].length; j++) {
-                finalStrusture[phaseTitle][j] = {
+                this.finalStructure[phaseTitle][j] = {
                     order: j, 
                     stageTitle: phases[phaseTitle][j],
                     tasks: stages[phases[phaseTitle][j]]
@@ -141,7 +145,6 @@ export default class License_status extends LightningElement {
         
         getProjectPlanByUserId({userId})
         .then(result => {
-            // console.log(result);
             this.projectDetails = result;
             this.processResponseData();
         })
@@ -157,11 +160,15 @@ export default class License_status extends LightningElement {
      */
     processResponseData() {
         let activePhaseNumber = 1;
+
         for(let phase in this.phases) {
             let state = this.phases[phase];
 
             if (state.title === this.projectDetails.Project_Phase__c) {
                 activePhaseNumber = state.order;
+                this.phases[`phase${activePhaseNumber}`].tasks = this.getTasksForActiveStage(this.projectDetails.Project_Stage__c);
+                this.getMarkedTasks(this.projectDetails.Project_Stage__c, this.projectDetails.Project_tasks__c)
+
                 state.isActive = true;
                 state.classes = 'phase-box enabled';
             } else {
@@ -200,6 +207,28 @@ export default class License_status extends LightningElement {
 
             if (tmpPhase.order < activePhaseNumber) {
                 tmpPhase.classes = `${tmpPhase.classes} striked`;
+            }
+        }
+    }
+
+    getTasksForActiveStage(stageTitle) {
+        for(let phase in this.finalStructure) {
+            for(let i=0; i < Object.keys(this.finalStructure[phase]).length ; i++) {
+                if (stageTitle === this.finalStructure[phase][i].stageTitle) {
+                    return this.finalStructure[phase][i].tasks;
+                }
+            }
+        }
+    }
+
+    getMarkedTasks(stageTitle, currentTaskTitle) {
+        for(let phase in this.finalStructure) {
+            for(let i=0; i < Object.keys(this.finalStructure[phase]).length ; i++) {
+                if (stageTitle === this.finalStructure[phase][i].stageTitle) {
+                    this.finalStructure[phase][i].tasks.forEach((task, idx) => {
+                        console.log(task, idx);
+                    })
+                }
             }
         }
     }
