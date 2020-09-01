@@ -1,6 +1,6 @@
 public with sharing class ProjectPlan {
     @AuraEnabled(cacheable=true)
-    public static Project_Plan__c getProjectPlanByUserId(String accountId, String userId) {
+    public static Project_Plan__c getProjectPlanByUserId(String userId) {
         System.debug(userId);
 
         String query = 'SELECT Id, ' +
@@ -41,6 +41,7 @@ public with sharing class ProjectPlan {
             projectPlan = Database.query(query);
         } catch(Exception e) {
             projectPlan = new Project_Plan__c();
+            projectPlan.Status_Note__c = e.getMessage();
             return projectPlan;
         }
         
@@ -58,5 +59,20 @@ public with sharing class ProjectPlan {
         }
 
         return projectPlan;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<String> getTasksValues(){
+        String[] values = new List<String>();
+        
+        Schema.DescribeFieldResult fieldResult = Project_Plan__c.Project_Tasks__c.getDescribe();
+
+        List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+
+        for( Schema.PicklistEntry pickListVal : ple){
+            values.add(pickListVal.getLabel());
+        }
+
+        return values;
     }
 }

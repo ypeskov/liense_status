@@ -1,6 +1,8 @@
 import { LightningElement, track } from 'lwc';
 import userId from '@salesforce/user/Id';
 import getProjectPlanByUserId from '@salesforce/apex/ProjectPlan.getProjectPlanByUserId';
+import getTasksValues from '@salesforce/apex/ProjectPlan.getTasksValues';
+import getDependencyMap from '@salesforce/apex/DependencyExtraction.getDependencyMap';
 
 export default class License_status extends LightningElement {
     @track phases = {
@@ -68,9 +70,76 @@ export default class License_status extends LightningElement {
         'Handover_Projected_Completion__c': 'Residency_Actual_Completion__c',
     };
 
-    connectedCallback() {
-        //hardcoded acccountId for dev
-        getProjectPlanByUserId({accountId: '0013M0000057CHTQA2', userId})
+    tasksPerPhase = {
+        phase1: [
+            'Power of Attorney Drafting',
+            'Application Details Completion',
+            'Company Name Reservation',
+            'MISA License Application',
+            'MISA License Issuance',
+            'MISA Portal Access Details',
+            'Authorized Signatory Assigning',
+            'Article of Association Preparation',
+            'AoA Review & Approval by MoC',
+        ],
+        phase2: [
+            'Receiving the Physical Documents',
+            'PoA Local Attestation',
+            'AoA Signing & Publishing',
+            'Commercial Registration Issuance',
+            'Chamber of Commerce Registration',
+            'Chamber of Commerce Activation',
+            'Ministry of Labor Registration',
+            'GOSI Registration',
+            'General Authority of Zakat & Tax Reg',
+            'Company Stamp Issuance',
+            'GM Visa Application',
+            'GM Visa Office Selection',
+            'GM Visa Processing (by the Client)',
+        ],
+        phase3: [
+            'GM Trip\'s Details to KSA',
+            'Border Number Collection (After Landing)',
+            'KSA Medical Checkup',
+            'KSA Health Insurance',
+            'KSA Residency Card Issuance',
+            'Muqeem Portal Registration',
+            'Absher Portal Registration',
+            'Re-entry Visa Issuance',
+            'Bank Account Docs Preparation',
+            'Handover Details Shared',
+        ]
+    }
+
+    async connectedCallback() {
+        let phases, stages;
+        try {
+            phases = await getDependencyMap({fieldName: 'Project_Stage__c'});
+            phases = JSON.parse(JSON.stringify(phases));
+        } catch(err) {
+            console.log(err);
+        }
+
+        try {
+            stages = await getDependencyMap({fieldName: 'Project_Tasks__c'});
+            // console.log(stages);
+        } catch(err) {
+            console.log(err);
+        }
+       
+        let finalStrusture ={};
+        for(let phaseTitle in phases) {
+            finalStrusture[phaseTitle] = {};
+            for(let j=0; j < phases[phaseTitle].length; j++) {
+                finalStrusture[phaseTitle][j] = {
+                    order: j, 
+                    stageTitle: phases[phaseTitle][j],
+                    tasks: stages[phases[phaseTitle][j]]
+                };
+            }
+        }
+        
+        getProjectPlanByUserId({userId})
         .then(result => {
             // console.log(result);
             this.projectDetails = result;
