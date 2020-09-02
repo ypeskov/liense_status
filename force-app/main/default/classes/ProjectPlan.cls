@@ -10,27 +10,27 @@ public with sharing class ProjectPlan {
             'toLabel(Project_Tasks__c), ' +
             'toLabel(Project_Phase__c), ' + 
             'Stage_Action__c, ' +
-            'Project_Start_Date__c, ' +
-            'MISA_License_Projected_Completion__c, ' +
-            'Articles_of_Assoc_Projected_Completion__c, ' +
-            'Company_reg_Projected_Completion__c, ' +
-            'Chamber_of_Commerce_Projected_Completion__c, ' +
-            'Ministry_of_Labor_Projected_Completion__c, ' +
-            'Zakat_Projected_Completion__c, ' +
-            'Company_Stamp_Forecasted_Completion__c, ' +
-            'GM_Visa_Forecasted_Completion__c, ' +
-            'Residency_Forecasted_Completion__c, ' +
-            'Handover_Projected_Completion__c, ' +
+            'FORMAT(Project_Start_Date__c), ' +
+            'FORMAT(MISA_License_Projected_Completion__c), ' +
+            'FORMAT(Articles_of_Assoc_Projected_Completion__c), ' +
+            'FORMAT(Company_reg_Projected_Completion__c), ' +
+            'FORMAT(Chamber_of_Commerce_Projected_Completion__c), ' +
+            'FORMAT(Ministry_of_Labor_Projected_Completion__c), ' +
+            'FORMAT(zakat_Projected_Completion__c), ' +
+            'FORMAT(Company_Stamp_Forecasted_Completion__c), ' +
+            'FORMAT(GM_Visa_Forecasted_Completion__c), ' +
+            'FORMAT(Residency_Forecasted_Completion__c), ' +
+            'FORMAT(Handover_Projected_Completion__c), ' +
             //actual completions
-            'MISA_License_Actual_Completion__c, ' +
-            'Articles_of_Assoc_Actual_Completion__c, ' +
-            'Company_Reg_Actual_Completion__c, ' +
-            'Chamber_of_Commerce_Actual_Completion__c, ' +
-            'Ministry_of_Labour_Actual_Completion__c, ' +
-            'Zakat_Actual_Completion__c, ' +
-            'Company_Stamp_Actual_Completion__c, ' +
-            'GM_VIsa_Actual_Completion__c, ' +
-            'Residency_Actual_Completion__c, ' +
+            'FORMAT(MISA_License_Actual_Completion__c), ' +
+            'FORMAT(Articles_of_Assoc_Actual_Completion__c), ' +
+            'FORMAT(Company_Reg_Actual_Completion__c), ' +
+            'FORMAT(Chamber_of_Commerce_Actual_Completion__c), ' +
+            'FORMAT(Ministry_of_Labour_Actual_Completion__c), ' +
+            'FORMAT(Zakat_Actual_Completion__c), ' +
+            'FORMAT(Company_Stamp_Actual_Completion__c), ' +
+            'FORMAT(GM_VIsa_Actual_Completion__c), ' +
+            'FORMAT(Residency_Actual_Completion__c), ' +
             'Status_Note__c ' +
             'FROM Project_Plan__c ' +
             'WHERE Client__c = \'' + String.escapeSingleQuotes(userId) + '\'' +
