@@ -130,7 +130,7 @@ export default class License_status extends LightningElement {
                     = this.getMarkedStages(this.projectDetails.Project_Phase__c, this.projectDetails.Project_Stage__c, false);
 
                 state.isActive = true;
-                state.classes = 'phase-box enabled';
+                state.classes = 'phase-box active-phase';
             } else {
                 state.isActive = false;
             }
