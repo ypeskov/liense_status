@@ -73,47 +73,6 @@ export default class License_status extends LightningElement {
         'Handover_Projected_Completion__c': 'Residency_Actual_Completion__c',
     };
 
-    // tasksPerPhase = {
-    //     phase1: [
-    //         'Power of Attorney Drafting',
-    //         'Application Details Completion',
-    //         'Company Name Reservation',
-    //         'MISA License Application',
-    //         'MISA License Issuance',
-    //         'MISA Portal Access Details',
-    //         'Authorized Signatory Assigning',
-    //         'Article of Association Preparation',
-    //         'AoA Review & Approval by MoC',
-    //     ],
-    //     phase2: [
-    //         'Receiving the Physical Documents',
-    //         'PoA Local Attestation',
-    //         'AoA Signing & Publishing',
-    //         'Commercial Registration Issuance',
-    //         'Chamber of Commerce Registration',
-    //         'Chamber of Commerce Activation',
-    //         'Ministry of Labor Registration',
-    //         'GOSI Registration',
-    //         'General Authority of Zakat & Tax Reg',
-    //         'Company Stamp Issuance',
-    //         'GM Visa Application',
-    //         'GM Visa Office Selection',
-    //         'GM Visa Processing (by the Client)',
-    //     ],
-    //     phase3: [
-    //         'GM Trip\'s Details to KSA',
-    //         'Border Number Collection (After Landing)',
-    //         'KSA Medical Checkup',
-    //         'KSA Health Insurance',
-    //         'KSA Residency Card Issuance',
-    //         'Muqeem Portal Registration',
-    //         'Absher Portal Registration',
-    //         'Re-entry Visa Issuance',
-    //         'Bank Account Docs Preparation',
-    //         'Handover Details Shared',
-    //     ]
-    // }
-
     finalStructure = {};
 
     async connectedCallback() {
@@ -142,6 +101,7 @@ export default class License_status extends LightningElement {
                 };
             }
         }
+        console.log(this.finalStructure)
         
         getProjectPlanByUserId({userId})
         .then(result => {
@@ -206,7 +166,7 @@ export default class License_status extends LightningElement {
 
         if (activePhaseNumber === 3) {
             this.phases['phase1'].tasks = this.getMarkedTasks('Chamber of Commerce', '', false);
-            this.phases['phase2'].tasks = this.getMarkedTasks('Ministry of Labor', '', false);
+            this.phases['phase2'].tasks = this.getMarkedTasks('GM Visa', '', false);
         }
 
         if (activePhaseNumber === 2 || activePhaseNumber === 3) {
