@@ -2,15 +2,11 @@
     <div class={phaseDetails.classes}>
         <div class="phase-title">{phaseDetails.title}</div>
         
-        <template if:true={phaseDetails.isActive}>
-            <div class="stage-title"><b>Stage:&nbsp;</b>{projectDetails.Project_Stage__c}</div>
-        </template>
-
-        <div class="tasks-title">
-            <div><b>Tasks:</b></div>
+        <div class="stage-title">
+            <div class="stages-label">Stages:</div>
             <ul>
-                <template for:each={phaseDetails.tasks} for:item="task">
-                    <c-task_in_stage key={task} task-in-loop={task}></c-task_in_stage>
+                <template for:each={phaseDetails.stages} for:item="stage">
+                    <li key={stage.title} class={stage.classes}>{stage.title}</li>
                 </template>
             </ul>
         </div>

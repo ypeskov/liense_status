@@ -13,7 +13,7 @@ export default class License_status extends LightningElement {
             classes: 'phase-box',
             startDate: null,
             endDate: null,
-            tasks: [],
+            stages: [],
         },
         phase2: {
             order: 2,
@@ -22,7 +22,7 @@ export default class License_status extends LightningElement {
             classes: 'phase-box',
             startDate: null,
             endDate: null,
-            tasks: [],
+            stages: [],
         },
         phase3: {
             order: 3,
@@ -31,7 +31,7 @@ export default class License_status extends LightningElement {
             classes: 'phase-box',
             startDate: null,
             endDate: null,
-            tasks: [],
+            stages: [],
         }
     };
 
@@ -101,7 +101,6 @@ export default class License_status extends LightningElement {
                 };
             }
         }
-        console.log(this.finalStructure)
         
         getProjectPlanByUserId({userId})
         .then(result => {
@@ -126,9 +125,9 @@ export default class License_status extends LightningElement {
 
             if (state.title === this.projectDetails.Project_Phase__c) {
                 activePhaseNumber = state.order;
-                // this.phases[`phase${activePhaseNumber}`].tasks = this.getTasksForActiveStage(this.projectDetails.Project_Stage__c);
-                this.phases[`phase${activePhaseNumber}`].tasks 
-                    = this.getMarkedTasks(this.projectDetails.Project_Stage__c, this.projectDetails.Project_Tasks__c);
+
+                this.phases[`phase${activePhaseNumber}`].stages 
+                    = this.getMarkedStages(this.projectDetails.Project_Phase__c, this.projectDetails.Project_Stage__c, false);
 
                 state.isActive = true;
                 state.classes = 'phase-box enabled';
@@ -154,19 +153,19 @@ export default class License_status extends LightningElement {
         }
 
         if (activePhaseNumber === 1) {
-            this.phases['phase2'].tasks = this.getMarkedTasks('Ministry of Labor', '', true);
-            this.phases['phase3'].tasks = this.getMarkedTasks('Residency', '', true);
+            this.phases['phase2'].stages = this.getMarkedStages('Portals Registration & GM Visa (3-4 Weeks)', '', true);
+            this.phases['phase3'].stages = this.getMarkedStages('Residency & Setup Finalisation (5-6 Weeks)', '', true);
         }
 
         if (activePhaseNumber === 2) {
             this.phases.phase1.endDate = this.projectDetails.Chamber_of_Commerce_Actual_Completion__c;
-            this.phases['phase1'].tasks = this.getMarkedTasks('Chamber of Commerce', '', false);
-            this.phases['phase3'].tasks = this.getMarkedTasks('Residency', '', true);
+            this.phases['phase1'].stages = this.getMarkedStages('Establishing a Legal Entity (2-3 Weeks)', '', false);
+            this.phases['phase3'].stages = this.getMarkedStages('Residency & Setup Finalisation (5-6 Weeks)', '', true);
         }
 
         if (activePhaseNumber === 3) {
-            this.phases['phase1'].tasks = this.getMarkedTasks('Chamber of Commerce', '', false);
-            this.phases['phase2'].tasks = this.getMarkedTasks('GM Visa', '', false);
+            this.phases['phase1'].stages = this.getMarkedStages('Establishing a Legal Entity (2-3 Weeks)', '', false);
+            this.phases['phase2'].stages = this.getMarkedStages('Portals Registration & GM Visa (3-4 Weeks)', '', false);
         }
 
         if (activePhaseNumber === 2 || activePhaseNumber === 3) {
@@ -179,44 +178,41 @@ export default class License_status extends LightningElement {
             let tmpPhase = this.phases[phase];
 
             if (tmpPhase.order < activePhaseNumber) {
-                tmpPhase.classes = `${tmpPhase.classes} striked`;
+                tmpPhase.classes = `${tmpPhase.classes}`;
             }
         }
     }
 
-    getMarkedTasks(stageTitle, currentTaskTitle, isFuture=false) {
+    getMarkedStages(phaseTitle, currentStage, isFuture=false) {
+        let stages = [];
         for(let phase in this.finalStructure) {
-            for(let i=0; i < Object.keys(this.finalStructure[phase]).length ; i++) {
-                if (stageTitle === this.finalStructure[phase][i].stageTitle) {
-                    let border = -1;
-                    let taskClasses = '';
-                    let tasks = [];
-                    this.finalStructure[phase][i].tasks.forEach((task, idx) => {
-                        if (task === currentTaskTitle) {
-                            border = idx;
+            if (phase === phaseTitle) {
+                let border = -1;
+                let stageClasses = '';
+                for(let i=0; i < Object.keys(this.finalStructure[phase]).length; i++) {
+                    if (!isFuture) {
+                        if (this.finalStructure[phase][i].stageTitle === currentStage) {
+                            border = i;
                         }
 
-                        if (!isFuture) {
-                            if (idx > border && border !== -1) {
-                                taskClasses = 'future';
-                            } else if (idx === border) {
-                                taskClasses = 'active';
-                            } else {
-                                taskClasses = 'striked';
-                            }
+                        if (i > border && border !== -1) {
+                            stageClasses = 'future';
+                        } else if (i === border) {
+                            stageClasses = 'active';
                         } else {
-                            taskClasses = 'future';
+                            stageClasses = 'striked';
                         }
-                        
+                    } else {
+                        stageClasses = 'future';
+                    }
 
-                        tasks[idx] = {
-                            'title': task,
-                            'classes': taskClasses,
-                        };
-                    });
-
-                    return tasks;
+                    stages[i] = {
+                        'title': this.finalStructure[phase][i].stageTitle,
+                        'classes': stageClasses,
+                    };
                 }
+
+                return stages;
             }
         }
     }

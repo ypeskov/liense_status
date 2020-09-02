@@ -6,29 +6,34 @@
     background-color: #C7C0C0; */
 }
 
-.striked {
-    text-decoration: line-through;
-    /* background-color: rgb(97, 173, 62); */
-    color: #000;
-}
-
-.enabled {
-    /* color: #240BC5;
-    background-color: #1eb9b9; */
-}
-
 .phase-title {
     font-weight: bold;
     font-size: 1.5em;
     padding-bottom: 1em;
 }
 
-.stage-title, .tasks-title {
+.stages-label {
     font-size: 1.3em;
+    font-weight: bold;
 }
 
 .dates-section {
     margin-top: 1em;
     display: flex;
     justify-content: space-between;
+}
+
+.striked {
+    text-decoration: line-through;
+    /* background-color: rgb(97, 173, 62); */
+    color: #000;
+}
+
+.future {
+    color: grey;
+}
+
+.active {
+    font-weight: bold;
+    color: green;
 }
