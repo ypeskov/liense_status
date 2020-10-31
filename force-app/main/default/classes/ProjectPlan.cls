@@ -38,42 +38,8 @@ public with sharing class ProjectPlan {
             'LIMIT 1';
 
         Project_Plan__c projectPlan;
-        try {
-            projectPlan = Database.query(query);
-        } catch(Exception e) {
-            projectPlan = new Project_Plan__c();
-            projectPlan.Status_Note__c = e.getMessage();
-            return projectPlan;
-        }
-        
-
-        if (projectPlan.Project_Phase__c == NULL) {
-            projectPlan.Project_Phase__c = '';
-        }
-        
-        if (projectPlan.Project_Stage__c == NULL) {
-            projectPlan.Project_Stage__c = '';
-        }
-
-        if (projectPlan.Project_Tasks__c == NULL) {
-            projectPlan.Project_Tasks__c = '';
-        }
+        projectPlan = Database.query(query);
 
         return projectPlan;
     }
-
-    // @AuraEnabled(cacheable=true)
-    // public static List<String> getTasksValues(){
-    //     String[] values = new List<String>();
-        
-    //     Schema.DescribeFieldResult fieldResult = Project_Plan__c.Project_Tasks__c.getDescribe();
-
-    //     List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
-
-    //     for( Schema.PicklistEntry pickListVal : ple){
-    //         values.add(pickListVal.getLabel());
-    //     }
-
-    //     return values;
-    // }
 }

@@ -1,7 +1,6 @@
 import { LightningElement, track } from 'lwc';
 import userId from '@salesforce/user/Id';
 import getProjectPlanByUserId from '@salesforce/apex/ProjectPlan.getProjectPlanByUserId';
-// import getTasksValues from '@salesforce/apex/ProjectPlan.getTasksValues';
 import getDependencyMap from '@salesforce/apex/DependencyExtraction.getDependencyMap';
 
 export default class License_status extends LightningElement {
