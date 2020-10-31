@@ -1,14 +1,14 @@
 import { LightningElement, track } from 'lwc';
 import userId from '@salesforce/user/Id';
 import getProjectPlanByUserId from '@salesforce/apex/ProjectPlan.getProjectPlanByUserId';
-import getTasksValues from '@salesforce/apex/ProjectPlan.getTasksValues';
+// import getTasksValues from '@salesforce/apex/ProjectPlan.getTasksValues';
 import getDependencyMap from '@salesforce/apex/DependencyExtraction.getDependencyMap';
 
 export default class License_status extends LightningElement {
     @track phases = {
         phase1: {
             order: 1,
-            title: 'Establishing a Legal Entity (2-3 Weeks)',
+            title: 'Establishing a Legal Entity',
             isActive: true,
             classes: 'phase-box',
             startDate: null,
@@ -17,7 +17,7 @@ export default class License_status extends LightningElement {
         },
         phase2: {
             order: 2,
-            title: 'Portals Registration & GM Visa (3-4 Weeks)',
+            title: 'Portals Registration & GM Visa',
             isActive: false,
             classes: 'phase-box',
             startDate: null,
@@ -26,7 +26,7 @@ export default class License_status extends LightningElement {
         },
         phase3: {
             order: 3,
-            title: 'Residency & Setup Finalisation (5-6 Weeks)',
+            title: 'Residency & Setup Finalisation',
             isActive: false,
             classes: 'phase-box',
             startDate: null,
@@ -34,6 +34,8 @@ export default class License_status extends LightningElement {
             stages: [],
         }
     };
+
+    @track companyName = '';
 
     @track projectDetails = {
         Project_Stage__c: '',
@@ -105,10 +107,11 @@ export default class License_status extends LightningElement {
         getProjectPlanByUserId({userId})
         .then(result => {
             this.projectDetails = result;
+            this.companyName = this.projectDetails.Account__r.Name;
             this.processResponseData();
         })
         .catch(err => {
-            alert('you don\'t have any project');
+            console.log('you don\'t have any project');
             console.log('OOOOOOOOPS')
             console.log(err);
         });
@@ -135,16 +138,20 @@ export default class License_status extends LightningElement {
                 state.isActive = false;
             }
         }
-
+        
         //generate start and end dates
         const currentStage = this.stages[this.projectDetails.Project_Stage__c];
-        this.phases[`phase${activePhaseNumber}`].endDate = this.projectDetails[currentStage[0]];
+        try {
+            this.phases[`phase${activePhaseNumber}`].endDate = this.projectDetails[currentStage[0]];
         
-        if (activePhaseNumber === currentStage[1]) {
-            const prevFieldName = this.mapProjectedStartDate2ActualEndPrev[currentStage[0]];
-            this.phases[`phase${activePhaseNumber}`].startDate = this.projectDetails[prevFieldName];
-        }
+            if (activePhaseNumber === currentStage[1]) {
+                const prevFieldName = this.mapProjectedStartDate2ActualEndPrev[currentStage[0]];
+                this.phases[`phase${activePhaseNumber}`].startDate = this.projectDetails[prevFieldName];
+            }
 
+        } catch(err) {
+            // console.log(err);
+        }
         try {
             this.phases.phase1.startDate = this.projectDetails.Project_Start_Date__c;
             this.phases.phase3.endDate = this.projectDetails.Handover_Projected_Completion__c;
@@ -153,19 +160,19 @@ export default class License_status extends LightningElement {
         }
 
         if (activePhaseNumber === 1) {
-            this.phases['phase2'].stages = this.getMarkedStages('Portals Registration & GM Visa (3-4 Weeks)', '', true);
-            this.phases['phase3'].stages = this.getMarkedStages('Residency & Setup Finalisation (5-6 Weeks)', '', true);
+            this.phases['phase2'].stages = this.getMarkedStages('Portals Registration & GM Visa', '', true);
+            this.phases['phase3'].stages = this.getMarkedStages('Residency & Setup Finalisation', '', true);
         }
 
         if (activePhaseNumber === 2) {
             this.phases.phase1.endDate = this.projectDetails.Chamber_of_Commerce_Actual_Completion__c;
-            this.phases['phase1'].stages = this.getMarkedStages('Establishing a Legal Entity (2-3 Weeks)', '', false);
-            this.phases['phase3'].stages = this.getMarkedStages('Residency & Setup Finalisation (5-6 Weeks)', '', true);
+            this.phases['phase1'].stages = this.getMarkedStages('Establishing a Legal Entity', '', false);
+            this.phases['phase3'].stages = this.getMarkedStages('Residency & Setup Finalisation', '', true);
         }
 
         if (activePhaseNumber === 3) {
-            this.phases['phase1'].stages = this.getMarkedStages('Establishing a Legal Entity (2-3 Weeks)', '', false);
-            this.phases['phase2'].stages = this.getMarkedStages('Portals Registration & GM Visa (3-4 Weeks)', '', false);
+            this.phases['phase1'].stages = this.getMarkedStages('Establishing a Legal Entity', '', false);
+            this.phases['phase2'].stages = this.getMarkedStages('Portals Registration & GM Visa', '', false);
         }
 
         if (activePhaseNumber === 2 || activePhaseNumber === 3) {
@@ -176,9 +183,23 @@ export default class License_status extends LightningElement {
 
         for(let phase in this.phases) {
             let tmpPhase = this.phases[phase];
-
+            
             if (tmpPhase.order < activePhaseNumber) {
-                tmpPhase.classes = `${tmpPhase.classes}`;
+                let cl = '';
+                switch(tmpPhase.order) {
+                    case 1:
+                        cl = 'greyed';
+                        break;
+                    case 2: 
+                        cl = 'greyed2';
+                        break;
+                    case 3:
+                        cl = 'greyed3';
+                        break;
+                }
+
+                tmpPhase.classes = `${tmpPhase.classes} ` + cl;
+
             }
         }
     }
@@ -189,12 +210,13 @@ export default class License_status extends LightningElement {
             if (phase === phaseTitle) {
                 let border = -1;
                 let stageClasses = '';
+                
                 for(let i=0; i < Object.keys(this.finalStructure[phase]).length; i++) {
                     if (!isFuture) {
                         if (this.finalStructure[phase][i].stageTitle === currentStage) {
                             border = i;
                         }
-
+                        
                         if (i > border && border !== -1) {
                             stageClasses = 'future';
                         } else if (i === border) {
@@ -204,12 +226,14 @@ export default class License_status extends LightningElement {
                         }
                     } else {
                         stageClasses = 'future';
+                        
                     }
 
                     stages[i] = {
                         'title': this.finalStructure[phase][i].stageTitle,
                         'classes': stageClasses,
                     };
+                    // console.log(this.finalStructure[phase][i])
                 }
 
                 return stages;

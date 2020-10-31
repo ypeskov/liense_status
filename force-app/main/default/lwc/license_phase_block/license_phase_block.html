@@ -1,7 +1,18 @@
 <template>
     <div class={phaseDetails.classes}>
         <div class="phase-title">{phaseDetails.title}</div>
-        
+        <div class="stage-title">
+            <template if:true={phaseDetails.isActive}>
+                <div class="stages-label">
+                    In-Progress
+                </div>
+            </template>
+            <template if:false={phaseDetails.isActive}>
+                <div class="stages-label">
+                    Completed
+                </div>
+            </template>
+        </div>
         <div class="stage-title">
             <div class="stages-label">Stages:</div>
             <ul>

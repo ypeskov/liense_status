@@ -6,6 +6,7 @@ public with sharing class ProjectPlan {
         String query = 'SELECT Id, ' +
             'Name, ' +
             'Account__c, ' +
+            'Account__r.Name, ' +
             'toLabel(Project_Stage__c), ' +
             'toLabel(Project_Tasks__c), ' +
             'toLabel(Project_Phase__c), ' + 
@@ -61,18 +62,18 @@ public with sharing class ProjectPlan {
         return projectPlan;
     }
 
-    @AuraEnabled(cacheable=true)
-    public static List<String> getTasksValues(){
-        String[] values = new List<String>();
+    // @AuraEnabled(cacheable=true)
+    // public static List<String> getTasksValues(){
+    //     String[] values = new List<String>();
         
-        Schema.DescribeFieldResult fieldResult = Project_Plan__c.Project_Tasks__c.getDescribe();
+    //     Schema.DescribeFieldResult fieldResult = Project_Plan__c.Project_Tasks__c.getDescribe();
 
-        List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+    //     List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
 
-        for( Schema.PicklistEntry pickListVal : ple){
-            values.add(pickListVal.getLabel());
-        }
+    //     for( Schema.PicklistEntry pickListVal : ple){
+    //         values.add(pickListVal.getLabel());
+    //     }
 
-        return values;
-    }
+    //     return values;
+    // }
 }
